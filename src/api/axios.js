@@ -3,6 +3,7 @@ import axios from 'axios';
 // Creamos la conexión base
 const api = axios.create({// Esto elegirá automáticamente la URL correcta según si estás en local o prod
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
+    withCredentials: true
     /*
     headers: {
         'Content-Type': 'application/json'

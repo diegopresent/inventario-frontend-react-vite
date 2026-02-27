@@ -8,7 +8,7 @@ export const useCategories = () => {
     const [loading, setLoading] = useState(false);
     
     // Estados de control
-    const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
+    const [pagination, setPagination] = useState({ page: 1, totalPages: 1, total: 0 });
     const [search, setSearch] = useState("");
     const [searchTerm, setSearchTerm] = useState(""); // Término confirmado al dar Enter/Click
 
@@ -25,7 +25,8 @@ export const useCategories = () => {
 
             setPagination(prev => ({
                 ...prev,
-                totalPages: res.data.pagination?.totalPages || 1
+                totalPages: res.data.pagination?.totalPages || 1,
+                total: res.data.pagination?.total || 0
             }));
 
         } catch (error) {

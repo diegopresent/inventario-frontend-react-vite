@@ -5,6 +5,9 @@ import api from '../api/axios';
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    
+    const [loading, setLoading] = useState(false);
+    
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -19,6 +22,11 @@ const LoginPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Evitar doble envío si ya está cargando
+        if (loading) return;
+
+        setLoading(true); // Bloqueamos el botón
 
         try {
             // 1. Petición al Backend
@@ -52,6 +60,7 @@ const LoginPage = () => {
                 title: 'Error de acceso',
                 text: error.response?.data?.message || 'Credenciales incorrectas',
             });
+            setLoading(false); // Desbloqueamos el botón solo si hubo error para que intente de nuevo
         }
     };
 
@@ -75,6 +84,7 @@ const LoginPage = () => {
                             placeholder="admin@prueba.com"
                             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
                             required
+                            disabled={loading} // Desactivar input mientras carga
                         />
                     </div>
 
@@ -85,17 +95,32 @@ const LoginPage = () => {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            placeholder="123456"
+                            placeholder="••••••"
                             className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
                             required
+                            disabled={loading} // Desactivar input mientras carga
                         />
                     </div>
 
+                    {/* 2. Botón Inteligente */}
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg transition-all hover:scale-[1.02]"
+                        disabled={loading} // Atributo clave para evitar clicks
+                        className={`w-full text-white font-bold py-3 rounded-lg shadow-lg transition-all 
+                            ${loading 
+                                ? 'bg-gray-400 cursor-not-allowed' // Estilo deshabilitado
+                                : 'bg-blue-600 hover:bg-blue-700 hover:scale-[1.02]' // Estilo normal
+                            }`}
                     >
-                        Iniciar Sesión
+                        {loading ? (
+                            <div className="flex items-center justify-center gap-2">
+                                {/* Pequeño spinner CSS */}
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                <span>Verificando...</span>
+                            </div>
+                        ) : (
+                            'Iniciar Sesión'
+                        )}
                     </button>
                 </form>
 
